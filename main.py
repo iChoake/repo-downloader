@@ -1,13 +1,23 @@
 import requests, os
+from zipfile import ZipFile
 
 # Format: https://github.com/{owner}/{repo}
 OWNER   = "" # Owner of the GitHub repo
 REPO    = "" # GitHub repository name
+EXT     = ".zip" # Extension
+
+def zip_extractor(filename):
+    with ZipFile(filename+EXT, 'r') as zObject:
+        zObject.extractall(filename)
 
 def version_downloader(repo,name,url):
     print("Processing... "+url)
     response = requests.get(url)
-    open(repo+"/"+name+".zip", "wb").write(response.content)
+    filename = repo+"/"+name
+    open(filename+EXT, "wb").write(response.content)
+    
+    zip_extractor(filename) # Extracting Zip files
+    
 
 def repo_downloader(owner, repo):
     url = "https://api.github.com/repos/"+owner+"/"+repo+"/tags"
